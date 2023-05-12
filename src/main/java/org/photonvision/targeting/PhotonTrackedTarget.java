@@ -20,7 +20,7 @@ package org.photonvision.targeting;
 // this requires wpilib 22.4.1+
 // import edu.wpi.first.math.geometry.Quaternion;
 // import edu.wpi.first.math.geometry.Rotation3d;
-// import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Transform3d;
 // import edu.wpi.first.math.geometry.Translation3d;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +35,13 @@ public class PhotonTrackedTarget {
     private double area;
     private double skew;
     private int fiducialId;
-    // private Transform3d bestCameraToTarget = new Transform3d();
-    // private Transform3d altCameraToTarget = new Transform3d();
+    private Transform3d bestCameraToTarget = new Transform3d();
+    private Transform3d altCameraToTarget = new Transform3d();
     private double poseAmbiguity;
     private List<TargetCorner> targetCorners;
 
-    public PhotonTrackedTarget() {}
+    public PhotonTrackedTarget() {
+    }
 
     /** Construct a tracked target, given exactly 4 corners */
     public PhotonTrackedTarget(
@@ -49,8 +50,8 @@ public class PhotonTrackedTarget {
             double area,
             double skew,
             int id,
-            // Transform3d pose,
-            // Transform3d altPose,
+            Transform3d pose,
+            Transform3d altPose,
             double ambiguity,
             List<TargetCorner> corners) {
         assert corners.size() == 4;
@@ -59,8 +60,8 @@ public class PhotonTrackedTarget {
         this.area = area;
         this.skew = skew;
         this.fiducialId = id;
-        // this.bestCameraToTarget = pose;
-        // this.altCameraToTarget = altPose;
+        this.bestCameraToTarget = pose;
+        this.altCameraToTarget = altPose;
         this.targetCorners = corners;
         this.poseAmbiguity = ambiguity;
     }
@@ -87,7 +88,8 @@ public class PhotonTrackedTarget {
     }
 
     /**
-     * Get the ratio of pose reprojection errors, called ambiguity. Numbers above 0.2 are likely to be
+     * Get the ratio of pose reprojection errors, called ambiguity. Numbers above
+     * 0.2 are likely to be
      * ambiguous. -1 if invalid.
      */
     public double getPoseAmbiguity() {
@@ -95,7 +97,8 @@ public class PhotonTrackedTarget {
     }
 
     /**
-     * Return a list of the 4 corners in image space (origin top left, x left, y down), in no
+     * Return a list of the 4 corners in image space (origin top left, x left, y
+     * down), in no
      * particular order, of the minimum area bounding rectangle of this target
      */
     public List<TargetCorner> getCorners() {
@@ -103,25 +106,29 @@ public class PhotonTrackedTarget {
     }
 
     /**
-     * Get the transform that maps camera space (X = forward, Y = left, Z = up) to object/fiducial tag
+     * Get the transform that maps camera space (X = forward, Y = left, Z = up) to
+     * object/fiducial tag
      * space (X forward, Y left, Z up) with the lowest reprojection error
      */
-    // public Transform3d getBestCameraToTarget() {
-    //     return bestCameraToTarget;
-    // }
+    public Transform3d getBestCameraToTarget() {
+        return bestCameraToTarget;
+    }
 
     /**
-     * Get the transform that maps camera space (X = forward, Y = left, Z = up) to object/fiducial tag
+     * Get the transform that maps camera space (X = forward, Y = left, Z = up) to
+     * object/fiducial tag
      * space (X forward, Y left, Z up) with the highest reprojection error
      */
-    // public Transform3d getAlternateCameraToTarget() {
-    //     return altCameraToTarget;
-    // }
+    public Transform3d getAlternateCameraToTarget() {
+        return altCameraToTarget;
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         PhotonTrackedTarget that = (PhotonTrackedTarget) o;
         return Double.compare(that.yaw, yaw) == 0
                 && Double.compare(that.pitch, pitch) == 0
@@ -133,30 +140,30 @@ public class PhotonTrackedTarget {
 
     // @Override
     // public int hashCode() {
-    //     return Objects.hash(yaw, pitch, area, bestCameraToTarget, altCameraToTarget);
+    // return Objects.hash(yaw, pitch, area, bestCameraToTarget, altCameraToTarget);
     // }
 
     // private static Transform3d decodeTransform(Packet packet) {
-    //     double x = packet.decodeDouble();
-    //     double y = packet.decodeDouble();
-    //     double z = packet.decodeDouble();
-    //     var translation = new Translation3d(x, y, z);
-    //     double w = packet.decodeDouble();
-    //     x = packet.decodeDouble();
-    //     y = packet.decodeDouble();
-    //     z = packet.decodeDouble();
-    //     var rotation = new Rotation3d(new Quaternion(w, x, y, z));
-    //     return new Transform3d(translation, rotation);
+    // double x = packet.decodeDouble();
+    // double y = packet.decodeDouble();
+    // double z = packet.decodeDouble();
+    // var translation = new Translation3d(x, y, z);
+    // double w = packet.decodeDouble();
+    // x = packet.decodeDouble();
+    // y = packet.decodeDouble();
+    // z = packet.decodeDouble();
+    // var rotation = new Rotation3d(new Quaternion(w, x, y, z));
+    // return new Transform3d(translation, rotation);
     // }
 
     // private static void encodeTransform(Packet packet, Transform3d transform) {
-    //     packet.encode(transform.getTranslation().getX());
-    //     packet.encode(transform.getTranslation().getY());
-    //     packet.encode(transform.getTranslation().getZ());
-    //     packet.encode(transform.getRotation().getQuaternion().getW());
-    //     packet.encode(transform.getRotation().getQuaternion().getX());
-    //     packet.encode(transform.getRotation().getQuaternion().getY());
-    //     packet.encode(transform.getRotation().getQuaternion().getZ());
+    // packet.encode(transform.getTranslation().getX());
+    // packet.encode(transform.getTranslation().getY());
+    // packet.encode(transform.getTranslation().getZ());
+    // packet.encode(transform.getRotation().getQuaternion().getW());
+    // packet.encode(transform.getRotation().getQuaternion().getX());
+    // packet.encode(transform.getRotation().getQuaternion().getY());
+    // packet.encode(transform.getRotation().getQuaternion().getZ());
     // }
 
     /**

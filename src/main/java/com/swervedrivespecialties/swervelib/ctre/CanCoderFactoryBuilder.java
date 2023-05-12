@@ -30,10 +30,12 @@ public class CanCoderFactoryBuilder {
             config.magnetOffsetDegrees = Math.toDegrees(configuration.getOffset());
             config.sensorDirection = direction == Direction.CLOCKWISE;
 
-            CANCoder encoder = new CANCoder(configuration.getId(), Constants.DRIVETRAIN_CAN_BUS_NAME);
+            CANCoder encoder = new CANCoder(configuration.getId(), Constants.CAN_BUS_NAME_DRIVETRAIN);
             CtreUtils.checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
 
-            CtreUtils.checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, periodMilliseconds, 250), "Failed to configure CANCoder update rate");
+            CtreUtils.checkCtreError(
+                    encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, periodMilliseconds, 250),
+                    "Failed to configure CANCoder update rate");
 
             return new EncoderImplementation(encoder);
         };

@@ -8,8 +8,6 @@ import frc.robot.Constants;
 
 public class ChassisSubsystem extends SubsystemBase {
 
-    private CANdle candle;
-
     private String serialNumber = "unknown";
 
     private static ChassisSubsystem instance;
@@ -18,8 +16,6 @@ public class ChassisSubsystem extends SubsystemBase {
      * Handles robot wide and generic systems
      */
     public ChassisSubsystem() {
-        candle.configLEDType(CANdle.LEDStripType.RGB);
-        candle.configBrightnessScalar(0.5);
         instance = this;
         serialNumber = RobotController.getSerialNumber();
         System.out.println("SERIALNUMBER=" + serialNumber);

@@ -1,21 +1,25 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+// import frc.common.control.PidConstants;
+// import edu.wpi.first.wpilibj.DutyCycle;
 
 public class Constants {
-    public static final String CANIVORE_CAN_BUS_NAME = "FastFD";
-    public static final String RIO_CAN_BUS_NAME = "rio";
-    public static final String CAN_BUS_NAME_DRIVETRAIN = CANIVORE_CAN_BUS_NAME;
+    public static final String CAN_BUS_NAME_CANIVORE = "FastFD";
+    public static final String CAN_BUS_NAME_ROBORIO = "rio";
+    public static final String CAN_BUS_NAME_DRIVETRAIN = CAN_BUS_NAME_CANIVORE;
 
-    public static final int CONTROLLER_PORT = 0;
-
-    public static final int ARM_MOTOR_PORT = 8;
-
-    public static final int FEEDER_SENSOR_FULL_PORT = 0; // 1;
-    public static final int FEEDER_SENSOR_ENTRY_PORT = 0;
+    // IO Controller definitions
+    public static final int CONTROLLER_USB_PORT_DRIVER = 0; // Drivers Controller
+    public static final int CONTROLLER_USB_PORT_OPERATOR = 1; // Ordanence operators controller
 
     // DRIVETRAIN Subsystem
     public static final double DRIVETRAIN_LENGTH_METERS = Units.inchesToMeters(20.5);
@@ -48,11 +52,20 @@ public class Constants {
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET_TEST = -Math.toRadians(263.67); // Swervee Module Offset
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(154.41 + 180); // Comp Module Offset
 
+    // CHASSIS Subsystem
+    public static final int CANDLE_CAN_ID = 27; // the CAN ID for the FASTFD CAN Bus
+    public static final String TEST_ROBORIO_SERIAL_NUMBER = "0316b2d6"; // serial number of Swervee roborio
     public static final String DRIVER_READOUT_TAB_NAME = "Driver Readout";
 
-    public static final String TEST_ROBORIO_SERIAL_NUMBER = "0316b2d6"; // serial number of Swervee roborio
+    // Field measurements
+    public static final double FIELD_LENGTH = Units.feetToMeters(54);
+    public static final double FIELD_WIDTH = Units.feetToMeters(27);
 
+    // Vision Stuff
     public static final String CAMERA_NAME = "photonvision";
     public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(new Translation3d(.3, 0, 0.2),
             new Rotation3d(0, 0, 0));
+    public static final Pose3d TAG_1_POSE3D = new Pose3d(FIELD_LENGTH, FIELD_WIDTH / 2, 4.5, new Rotation3d(0, 0, 180));
+    public static final boolean TEST_MODE = false;
+
 }

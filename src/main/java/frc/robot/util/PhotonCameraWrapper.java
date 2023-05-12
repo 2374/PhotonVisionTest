@@ -23,6 +23,11 @@ public class PhotonCameraWrapper {
     public PhotonTrackedTarget lastTarget;
 
     public PhotonCameraWrapper() {
+        final AprilTag tag1 = new AprilTag(1, Constants.TAG_1_POSE3D);
+        ArrayList<AprilTag> tagList = new ArrayList<>();
+        tagList.add(tag1);
+        fieldLayout = new AprilTagFieldLayout(tagList, Constants.FIELD_LENGTH,
+                Constants.FIELD_WIDTH);
         try {
             fieldLayout = AprilTagFieldLayout
                     .loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);

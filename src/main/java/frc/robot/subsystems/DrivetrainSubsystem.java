@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
 import java.util.Map;
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.swervedrivespecialties.swervelib.Mk3ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.Mk3SwerveModuleHelper;
@@ -230,6 +234,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     /**
+     * Resets the rotation of the drivetrain to vision measurement.
+     */
+    public void alignToVision() {
+        System.out.println("reset - vision");
+        Optional<EstimatedRobotPose> result = pcw.getEstimatedGlobalPose(estimator.getEstimatedPosition());
+        if (result.isPresent()) {
+            EstimatedRobotPose camPose = result.get();
+            estimator.resetPosition(getGyroscopeRotation(), getSwerveModulePositions(),
+                    camPose.estimatedPose.toPose2d());
+        }
+
+    }
+
+    /**
      * Returns the position of the robot
      */
     public Pose2d getPose() {
@@ -280,19 +298,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
         estimator.update(getGyroscopeRotation(), getSwerveModulePositions());
 
         // Vision stuff // No Field relative until need to align // do not uncomment
-        // Optional<EstimatedRobotPose> result =
-        // pcw.getEstimatedGlobalPose(estimator.getEstimatedPosition());
-        // if (result.isPresent()) {
-        // EstimatedRobotPose camPose = result.get();
-        // estimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), // REMOVE
-        // THE ROTATION PART
-        // camPose.timestampSeconds);
-        // m_field.getObject("Cam Est Pos").setPose(camPose.estimatedPose.toPose2d());
-        // } else {
-        // m_field.getObject("Cam Est Pos").setPose(new Pose2d(-100, -100, new
-        // Rotation2d()));
-        // }
-        // m_field.getObject("Actual Pos").setPose(getPose());
+        Optional<EstimatedRobotPose> result = pcw.getEstimatedGlobalPose(estimator.getEstimatedPosition());
+        if (result.isPresent()) {
+            EstimatedRobotPose camPose = result.get();
+            estimator.addVisionMeasurement(camPose.estimatedPose.toPose2d(), // REMOVE THE ROTATION PART
+                    camPose.timestampSeconds);
+            m_field.getObject("Cam Est Pos").setPose(camPose.estimatedPose.toPose2d());
+        } else {
+            m_field.getObject("Cam Est Pos").setPose(new Pose2d(-100, -100, new Rotation2d()));
+        }
+        m_field.getObject("Actual Pos").setPose(getPose());
 
         m_field.setRobotPose(estimator.getEstimatedPosition());
 
