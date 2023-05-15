@@ -331,11 +331,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         motorOutputLimiter = motorOutputPercentageLimiterEntry.getDouble(0.0) / 100;
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
-        // if (false) {
-        // states = new SwerveModuleState[] {
-        // new SwerveModuleState(0, -45)
-        // }
-        // }
 
         SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
         frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
